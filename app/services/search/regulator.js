@@ -51,6 +51,7 @@ exports.fetch = async function (query, vertical, pageNumber, sessionId, userId, 
 
     if (!distributionOfLabour) {
         const response = await provider.fetch(providerName, query, vertical, pageNumber, resultPerPageCount, relevanceFeedbackIds);
+        // console.log("response", response)
         response.results = addMissingFields(response.results);
         return response;
     }

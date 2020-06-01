@@ -8,6 +8,9 @@ const https = require('https');
 
 const mongoose = require('mongoose');
 const Page = mongoose.model('Page');
+const Readability = require("readability");
+const JSDOM = require("jsdom").JSDOM;
+
 
 const config = require('../config/config');
 if (!fs.existsSync(config.outDir)) {
@@ -153,12 +156,22 @@ const sleep = function(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-const savePage = async function(url) {
+exports.savePage = async function(url) {
     const page = await waitForNewPage();
     await page.goto(url, {waitUntil: 'networkidle2',  timeout: 100000});
     await page.setViewport({width: 1360, height: 768});
 
     const body = await page.content();
+    // var article = new Readability(body).parse();
+    // const body = await requestPromise(url);
+    const doc = new JSDOM(body, {
+        url: url,
+    });
+    const reader = new Readability(doc.window.document);
+    const article = reader.parse();
+
+
+    // console.log("Body", article)
     const id = await upsertPage(url, {
         'url': url,
         'timestamp': Math.floor(Date.now()),
@@ -179,6 +192,7 @@ const savePage = async function(url) {
     upsertPage(url, {
         'screenshot': filepath
     });
+    return article
 };
 
 ////

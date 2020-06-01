@@ -1,6 +1,11 @@
 
 'use strict';
-
+const scrap = require('../../scrap');
+const puppeteer = require('puppeteer');
+const request = require('request');
+const Readability = require("readability");
+const JSDOM = require("jsdom").JSDOM;
+const requestPromise = require("request-promise-native");
 const BingApi = require('node-bing-api')({
     accKey: process.env.BING_ACCESS_KEY,
     rootUri: "https://api.cognitive.microsoft.com/bing/v7.0/"
@@ -9,7 +14,7 @@ const BingApi = require('node-bing-api')({
 /**
  * Fetch data from bing and return formatted results.
  */
-exports.fetch = function (query, vertical, pageNumber, resultsPerPage, relevanceFeedbackDocuments) {
+exports.fetch = async function (query, vertical, pageNumber, resultsPerPage, relevanceFeedbackDocuments) {
     return new Promise(function (resolve, reject) {
         const callback = function (err, res, body) {
             if (err) return reject(err);
@@ -36,7 +41,30 @@ exports.fetch = function (query, vertical, pageNumber, resultsPerPage, relevance
 /**
  * Format result body received from search api call.
  */
-function formatResults(vertical, body) {
+
+const savePage = async function(url) {
+    // const page = await waitForNewPage();
+    // await page.goto(url, {waitUntil: 'networkidle2',  timeout: 100000});
+    // await page.setViewport({width: 1360, height: 768});
+
+    // const body = await page.content();
+    // // var article = new Readability(body).parse();
+    const body = await requestPromise(url);
+    const doc = new JSDOM(body, {
+        url: url,
+    });
+    const reader = new Readability(doc.window.document);
+    const article = reader.parse();
+
+
+    // console.log("Body", article)
+    // await page.close();
+
+    ////
+    return article
+};
+
+const formatResults= async function(vertical, body) {
     if (!body) {
         throw new Error('No response from bing api.');
     }
@@ -52,6 +80,12 @@ function formatResults(vertical, body) {
 
     if (vertical === 'web') {
         body = body.webPages
+        for (let i = 0; i < body.value.length; i++) {
+            const clean =  await savePage(body.value[i].url)
+            // console.log(clean.content)
+            body.value[i].text = clean.content
+            // body.value[i].url = body.value[i].contentUrl;
+        }
     }
 
     if (vertical === 'images' || vertical === 'videos') {
@@ -59,13 +93,25 @@ function formatResults(vertical, body) {
             body.value[i].url = body.value[i].contentUrl;
         }
     }
-
+    
+    
     return {
-        results: body.value,
-        matches: body.totalEstimatedMatches
+        results: await body.value.map(formatResult),
+        // matches: body.totalEstimatedMatches
     };
 }
-
+function formatResult (result) {
+    
+    return {
+        id: result.id,
+        url: result.url,
+        name: result.name,
+        snippet: result.snippet,
+        about: result.about,
+        displayUrl: result.displayUrl,
+        text: result.text
+    }
+}
 /**
  * Construct search query options according to search api (bing).
  * https://www.npmjs.com/package/node-bing-api
