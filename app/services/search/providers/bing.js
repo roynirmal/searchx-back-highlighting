@@ -81,9 +81,15 @@ const formatResults= async function(vertical, body) {
     if (vertical === 'web') {
         body = body.webPages
         for (let i = 0; i < body.value.length; i++) {
-            const clean =  await savePage(body.value[i].url)
-            // console.log(clean.content)
-            body.value[i].text = clean.content
+            try {
+                const clean =  await savePage(body.value[i].url)
+                // console.log(clean.content)
+                body.value[i].text = clean.content
+            }
+            catch(err) {
+                body.value[i].text = ""
+            }
+            
             // body.value[i].url = body.value[i].contentUrl;
         }
     }
@@ -94,9 +100,9 @@ const formatResults= async function(vertical, body) {
         }
     }
     
-    
+
     return {
-        results: await body.value.map(formatResult),
+        results: body.value.map(formatResult),
         // matches: body.totalEstimatedMatches
     };
 }
