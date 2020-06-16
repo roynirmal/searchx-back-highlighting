@@ -6,6 +6,6 @@ module.exports = {
     testUrl: 'http://localhost',
     cacheFreshness: 3600,
     scrapFreshness: 60 * 60 * 24,
-    enableScrap : true,
+    enableScrap : false,
     enableCache : true
 };

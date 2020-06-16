@@ -1,8 +1,10 @@
 
 'use strict';
-const scrap = require('../../scrap');
-const puppeteer = require('puppeteer');
-const request = require('request');
+// const scrap = require('../../scrap');
+// const puppeteer = require('puppeteer');
+// const request = require('request');
+const mongoose = require('mongoose');
+const Page = mongoose.model('Page');
 const Readability = require("readability");
 const JSDOM = require("jsdom").JSDOM;
 const requestPromise = require("request-promise-native");
@@ -41,6 +43,24 @@ exports.fetch = async function (query, vertical, pageNumber, resultsPerPage, rel
 /**
  * Format result body received from search api call.
  */
+const upsertPage = async function(url, doc) {
+    // console.log("inside upsert")
+    const query = {'url': url};
+    const options = {
+        upsert: true,
+        new: true,
+        setDefaultsOnInsert: true
+    };
+
+    const res = await Page.findOneAndUpdate(query, doc, options).exec()
+        .catch((err) => {
+            console.log('Could not save page.');
+            console.log(err);
+        });
+        // console.log("inside upsert after await")
+
+    return res._id;
+};
 
 const savePage = async function(url) {
     // const page = await waitForNewPage();
@@ -80,16 +100,34 @@ const formatResults= async function(vertical, body) {
 
     if (vertical === 'web') {
         body = body.webPages
+        let c= 0
         for (let i = 0; i < body.value.length; i++) {
             try {
-                const clean =  await savePage(body.value[i].url)
+                const url = body.value[i].url
+                const cont =  await Page
+                .find({url: url}, {url:1, html:1})
+                .sort({created: 1});
+                if (!Array.isArray(cont) || !cont.length) { 
+                    c++
+                    const clean =  await savePage(url)
                 // console.log(clean.content)
-                body.value[i].text = clean.content
+                    body.value[i].text = clean.content
+                // console.log("before upsert")
+                    const id = await upsertPage(url, {
+                        'url': url,
+                        'timestamp': Math.floor(Date.now()),
+                        'html': clean.content
+                    });
+                } else {
+                    body.value[i].text = cont[0].html
+                }
+                
+                // console.log("after upsert")
             }
             catch(err) {
                 body.value[i].text = ""
             }
-            
+        console.log(c)    
             // body.value[i].url = body.value[i].contentUrl;
         }
     }
