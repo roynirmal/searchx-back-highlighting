@@ -47,6 +47,10 @@ const bookmarkExcludeFields = {
     deleted: {
         type: Boolean,
         default: false
+    },
+    text: {
+        type: String,
+        required: true
     }
 };
 

@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const Bookmark = mongoose.model('Bookmark');
 const Exclude = mongoose.model('Exclude');
-
+const Page = mongoose.model('Page');
 ////
 
 exports.addBookmark = async function(sessionId, data, isExclude) {
@@ -19,7 +19,12 @@ exports.addBookmark = async function(sessionId, data, isExclude) {
         const now = new Date();
         data.created = now;
         data.date = now;
-
+        const cont =  await Page
+        .find({url: data.url}, {url:1, html:1})
+        .sort({created: 1});
+        // console.log("CONT", cont)
+        data.text = cont[0].html
+        // console.log("Er", data.text)
         const B = new Type(data);
         B.save();
         return;
@@ -72,7 +77,7 @@ exports.getBookmarks = async function(sessionId, isExclude) {
     return await Type
         .find(
             {sessionId: sessionId, deleted: false},
-            {url:1, title: 1, date: 1, userId: 1, starred: 1, _id: 0}
+            {url:1, title: 1, date: 1, userId: 1, starred: 1, text:1, _id: 0}
         )
         .sort({date: 1});
 };
@@ -81,7 +86,7 @@ exports.getUserBookmarks = async function(sessionId, userId) {
     return await Bookmark
         .find(
             {sessionId: sessionId, userId: userId, deleted: false},
-            {url:1, title: 1, date: 1, userId: 1, starred: 1, _id: 0}
+            {url:1, title: 1, date: 1, userId: 1, starred: 1, text:1, _id: 0}
         )
         .sort({date: 1});
 };
