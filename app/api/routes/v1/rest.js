@@ -15,6 +15,7 @@ module.exports = function(router) {
     // Search
     router.get('/search/:vertical', SearchCtrl.search);
     router.get('/search/:vertical/getById/:id', SearchCtrl.getById);
+    router.get('/search/:vertical/getUrl/:id', SearchCtrl.getByUrl);
 
     // Suggestions
     router.get('/suggestions', SuggestionsCtrl.suggestions);

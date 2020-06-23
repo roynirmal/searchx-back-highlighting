@@ -42,10 +42,19 @@ exports.search = async function (query, vertical, pageNumber, sessionId, userId,
  * @params {providerName} the name of the search provider to use (indri by default)
  */
 exports.getById = async function(id, providerName) {
+    // console.log("I am here index")
     return {
         result: await provider.getById(id, providerName)
     }
 };
+
+exports.getByUrl = async function(url, providerName) {
+    // console.log("I am here index")
+    return {
+        result: await provider.getByUrl(url, providerName)
+    }
+};
+
 
 
 /*

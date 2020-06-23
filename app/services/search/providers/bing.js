@@ -84,7 +84,51 @@ const savePage = async function(url) {
     return article
 };
 
-const formatResults= async function(vertical, body) {
+const getPage = async function(url) {
+    try {
+        console.log("Iam here")
+        
+        const cont =  await Page
+        .find({url: url}, {url:1, html:1})
+        .sort({created: 1});
+        if (!Array.isArray(cont) || !cont.length) { 
+
+            const clean =  await savePage(url)
+            const insertid = await upsertPage(url, {
+                'url': url,
+                'timestamp': Math.floor(Date.now()),
+                'html': clean.content
+            });
+        console.log("npt found", clean.content)
+            return clean.content
+        // console.log("before upsert")
+
+        } else {
+            console.log("found", cont[0].html)
+            return cont[0].html
+        }
+        
+        // console.log("after upsert")
+    }
+    catch(err) {
+        return ""
+    }
+}
+
+exports.getByUrl = async function (url) {
+    // return new Promise(function (resolve, reject) {
+    //     const callback = function (error, result) {
+    //         if (error) return reject(error);
+    //         resolve(formatResult(result));
+    //     };
+        console.log(getPage(url))
+        return getPage(url)
+        // BingApi.web(url, options, callback);
+    // });
+};
+
+
+function formatResults(vertical, body) {
     if (!body) {
         throw new Error('No response from bing api.');
     }
@@ -100,36 +144,6 @@ const formatResults= async function(vertical, body) {
 
     if (vertical === 'web') {
         body = body.webPages
-        let c= 0
-        for (let i = 0; i < body.value.length; i++) {
-            try {
-                const url = body.value[i].url
-                const cont =  await Page
-                .find({url: url}, {url:1, html:1})
-                .sort({created: 1});
-                if (!Array.isArray(cont) || !cont.length) { 
-                    c++
-                    const clean =  await savePage(url)
-                // console.log(clean.content)
-                    body.value[i].text = clean.content
-                // console.log("before upsert")
-                    const id = await upsertPage(url, {
-                        'url': url,
-                        'timestamp': Math.floor(Date.now()),
-                        'html': clean.content
-                    });
-                } else {
-                    body.value[i].text = cont[0].html
-                }
-                
-                // console.log("after upsert")
-            }
-            catch(err) {
-                body.value[i].text = ""
-            }
-        console.log(c)    
-            // body.value[i].url = body.value[i].contentUrl;
-        }
     }
 
     if (vertical === 'images' || vertical === 'videos') {
@@ -137,13 +151,13 @@ const formatResults= async function(vertical, body) {
             body.value[i].url = body.value[i].contentUrl;
         }
     }
-    
 
     return {
-        results: body.value.map(formatResult),
-        // matches: body.totalEstimatedMatches
+        results: body.value,
+        matches: body.totalEstimatedMatches
     };
 }
+
 function formatResult (result) {
     
     return {
@@ -153,7 +167,7 @@ function formatResult (result) {
         snippet: result.snippet,
         about: result.about,
         displayUrl: result.displayUrl,
-        text: result.text
+        // text: result.text
     }
 }
 /**
