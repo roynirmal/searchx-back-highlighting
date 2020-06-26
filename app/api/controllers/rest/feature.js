@@ -2,6 +2,7 @@
 
 const queryhistory = require('../../../services/features/queryhistory');
 const bookmark = require('../../../services/features/bookmark');
+const highlight = require('../../../services/features/highlight');
 const annotation = require('../../../services/features/annotation');
 const rating = require('../../../services/features/rating');
 const chat = require('../../../services/features/chat')
@@ -61,6 +62,33 @@ exports.removeBookmark = function(req,res) {
     );
 };
 
+exports.getHighlights = function(req, res) {
+    const sessionId = req.params.sessionId;
+    resolve(req, res,
+        highlight.getHighlights(sessionId),
+        'Could not get highlights.'
+    );
+};
+
+exports.addHighlight = function(req, res) {
+    const data = req.body;
+    const sessionId = req.params.sessionId;
+    resolve(req, res,
+        highlight.addHighlight(sessionId, data),
+        'Could not create a new highlight.'
+    );
+};
+
+exports.removeHighlight = function(req,res) {
+    const url = req.body.url;
+    const sessionId = req.params.sessionId;
+    resolve(req, res,
+        highlight.removeHighlight(sessionId, url),
+        'Could not delete highlight.'
+    );
+};
+
+
 exports.getExcludes = function(req, res) {
     const sessionId = req.params.sessionId;
     resolve(req, res,
@@ -93,6 +121,15 @@ exports.starBookmark = function(req, res) {
     resolve(req, res,
         bookmark.starBookmark(sessionId, url),
         'Could not star/unstar bookmark.'
+    );
+};
+
+exports.starHighlight = function(req, res) {
+    const url = req.body.url;
+    const sessionId = req.params.sessionId;
+    resolve(req, res,
+        highlight.starHighlight(sessionId, url),
+        'Could not star/unstar highlight.'
     );
 };
 

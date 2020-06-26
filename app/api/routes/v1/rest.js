@@ -29,11 +29,15 @@ module.exports = function(router) {
     // Feature
     router.get('/session/:sessionId/query', FeatureCtrl.getQueryHistory);
     router.get('/session/:sessionId/bookmark', FeatureCtrl.getBookmarks);
+    router.get('/session/:sessionId/highlight', FeatureCtrl.getHighlights);
     router.get('/session/:sessionId/exclude', FeatureCtrl.getExcludes);
     router.post('/session/:sessionId/bookmark', FeatureCtrl.addBookmark);
+    router.post('/session/:sessionId/highlight', FeatureCtrl.addHighlight);
     router.post('/session/:sessionId/exclude', FeatureCtrl.addExclude);
     router.post('/session/:sessionId/bookmark/star', FeatureCtrl.starBookmark);
+    router.post('/session/:sessionId/highlight/star', FeatureCtrl.starHighlight);
     router.delete('/session/:sessionId/bookmark', FeatureCtrl.removeBookmark);
+    router.delete('/session/:sessionId/highlight', FeatureCtrl.removeHighlight);
     router.delete('/session/:sessionId/exclude', FeatureCtrl.removeExclude);
     router.get('/session/:sessionId/annotation', FeatureCtrl.getAnnotation);
     router.post('/session/:sessionId/annotation', FeatureCtrl.addAnnotation);

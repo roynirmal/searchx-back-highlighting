@@ -62,6 +62,7 @@ bookmarkExcludeFields.starred = {
 };
 
 const BookmarkSchema = new Schema(bookmarkExcludeFields);
+const HighlightSchema = new Schema(bookmarkExcludeFields);
 
 const AnnotationSchema = new Schema({
     sessionId: {
@@ -143,6 +144,7 @@ const PopularQuerySchema = new Schema({
 module.exports = {
     QueryHistory: mongoose.model('QueryHistory', QueryHistorySchema),
     Bookmark: mongoose.model('Bookmark', BookmarkSchema),
+    Highlight: mongoose.model('Highlight', HighlightSchema),
     Exclude: mongoose.model('Exclude', ExcludeSchema),
     Annotation: mongoose.model('Annotation', AnnotationSchema),
     Rating: mongoose.model('Rating', RatingSchema),

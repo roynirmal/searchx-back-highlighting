@@ -86,7 +86,7 @@ const savePage = async function(url) {
 
 const getPage = async function(url) {
     try {
-        console.log("Iam here")
+        // console.log("Iam here")
         
         const cont =  await Page
         .find({url: url}, {url:1, html:1})
@@ -99,12 +99,12 @@ const getPage = async function(url) {
                 'timestamp': Math.floor(Date.now()),
                 'html': clean.content
             });
-        console.log("npt found", clean.content)
+        
             return clean.content
         // console.log("before upsert")
 
         } else {
-            console.log("found", cont[0].html)
+            console.log("Found")
             return cont[0].html
         }
         
@@ -121,7 +121,7 @@ exports.getByUrl = async function (url) {
     //         if (error) return reject(error);
     //         resolve(formatResult(result));
     //     };
-        console.log(getPage(url))
+        
         return getPage(url)
         // BingApi.web(url, options, callback);
     // });

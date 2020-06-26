@@ -3,6 +3,7 @@
 const provider = require("./provider");
 const regulator = require('./regulator');
 const bookmark = require('../features/bookmark');
+const highlight = require('../features/highlight');
 const annotation = require('../features/annotation');
 const rating = require('../features/rating');
 const view = require('../features/view');
@@ -68,6 +69,7 @@ async function addMetadata(results, sessionId, userId) {
         const id = result.id ? result.id : result.url;
         result.metadata = {
             bookmark: await bookmark.getBookmark(sessionId, id),
+            highlight: await highlight.getHighlight(sessionId, id),
             exclude: await bookmark.getBookmark(sessionId, id, true),
             annotations: (await annotation.getAnnotations(sessionId, id)),
             rating: (await rating.getRating(sessionId, id, userId)),
