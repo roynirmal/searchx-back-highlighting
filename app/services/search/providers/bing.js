@@ -104,7 +104,7 @@ const getPage = async function(url) {
         // console.log("before upsert")
 
         } else {
-            console.log("Found")
+            // console.log("Found")
             return cont[0].html
         }
         
