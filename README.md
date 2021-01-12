@@ -6,8 +6,10 @@ It is based on [Pienapple Search](http://onlinelibrary.wiley.com/doi/10.1002/pra
 The backend is responsible for fetching search requests to the search provider and managing the application's data. 
 It is built on NodeJS and exposes its endpoints through [express](https://expressjs.com/) (API) and [socket.io](https://socket.io/) (Websockets). Use it together with the [SearchX Front End](https://github.com/felipemoraes/searchx-frontend) to get a web-based collaborative search interface.
 
+**Note: This is the backend used for the publication *Note the Highlight: Incorporating Active Reading Tools in a Search as Learning Environment* (CHIIR21). It must be used together with any of the 4 possible frontend variants of the study (control, highlight, note, highlight+note)**
+
 # Setup
-These instructions are for Ubuntu Linux. The steps can be adapted for all major platforms.
+These instructions are for Ubuntu Linux. The steps can be adapted for all major platforms. See Docker below.
 
 - Install [NodeJS](https://nodejs.org/en/) (at least version 8.0)
     ```
@@ -72,6 +74,9 @@ These instructions are for Ubuntu Linux. The steps can be adapted for all major 
     // Check if API is running (curl or through browser)
     curl http://localhost:4443/v1
     ```
+    
+## Docker Setup
+Go to the [Docker](https://github.com/felipemoraes/searchx#docker) submodule of the main SearchX repository for detailed instructions. Remember to specify the URL of the backend and this BRANCH in the Dockerfile as shown in `highlight/docker-images/app/Dockerfile`. 
 
 ## Search Providers
 You can install the supported search providers as follows. See the [configuration section](#configuration) for how to configure which search provider is used by default.
