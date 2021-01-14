@@ -1,15 +1,21 @@
 # SearchX Backend
 
 SearchX is a scalable collaborative search system being developed by [Lambda Lab](http://www.wis.ewi.tudelft.nl/projects/learning-analytics/) of [TU Delft](https://www.tudelft.nl/).
-It is based on [Pineapple Search](http://onlinelibrary.wiley.com/doi/10.1002/pra2.2016.14505301122/full) and is further developed to facilitate collaborative search and sensemaking. SearchX includes features that enable crowdsourced user studies on collaborative search, and is easily extensible for new research.
+It is based on [Pineapple Search](http://onlinelibrary.wiley.com/doi/10.1002/pra2.2016.14505301122/full) and is further developed to facilitate search, active reading strategies and sensemaking. SearchX includes features that enable crowdsourced user studies on collaborative search, and is easily extensible for new research.
 
 The backend is responsible for fetching search requests to the search provider and managing the application's data. 
-It is built on NodeJS and exposes its endpoints through [express](https://expressjs.com/) (API) and [socket.io](https://socket.io/) (Websockets). Use it together with the [SearchX Front End](https://github.com/roynirmal/searchx-front-highlighting) to get a web-based collaborative search interface.
+It is built on NodeJS and exposes its endpoints through [express](https://expressjs.com/) (API) and [socket.io](https://socket.io/) (Websockets). Use it together with the [SearchX Highlighting Front End](https://github.com/roynirmal/searchx-front-highlighting) to get a web-based search interface.
 
-**Note: This is the backend used for the publication *Note the Highlight: Incorporating Active Reading Tools in a Search as Learning Environment* (CHIIR21). It must be used together with any of the 4 possible frontend variants of the study (control, highlight, note, highlight+note)**
+## Highlight Backend
+This is the backend used for the publication *Note the Highlight: Incorporating Active Reading Tools in a Search as Learning Environment* (CHIIR21). 
+It must be used together with with the specific [frontend](https://github.com/roynirmal/searchx-front-highlighting) that was also created for the study, where researchers can enable the Active Reading strategies evaluated: highlight, note-taking or both.
+This backend is based on the original [SearchX backend](https://github.com/felipemoraes/searchx-backend), but it has a completely different document rendering process: instead of showing the website with their complex styling, it is stripped down to black text on white background on a single column and images are left untouched - making highlighting easier to achieve and more impactful to the user.
+
+### SearchX Backend Integration
+SearchX is a modular system, so this highlight-specific backend will be integrated back into the original as a feature that can be enabled/disabled, in the first half of 2021.
 
 # Setup
-These instructions are for Ubuntu Linux. The steps can be adapted for all major platforms. See Docker below.
+These instructions are for Ubuntu Linux. The steps can be adapted for all major platforms. For Docker see below.
 
 - Install [NodeJS](https://nodejs.org/en/) (at least version 8.0)
     ```
@@ -144,18 +150,7 @@ npm test
 SearchX can be extended to define tasks, and to support new providers for search results.
 
 ## Tasks
-Tasks define extra functionality that can be used in the frontend for user studies, for example placing users in groups according to predefined criteria, giving them search instructions, and asking them questions on what they found. Two example tasks have been added in `app/services/session/tasks/`:
-- `exampleGroupAsync.js` is a basic example of a task that can be performed by a group. When a new user requests this task, they enter into a group and can try to start solving a search puzzle. When more new users request the task, they join the same group (until it is full) and can collaborate in solving the puzzle. This example is asynchronous, since it users do not need to search at the same time. Please note that the front-end part of this task contains more components to form the complete task (e.g. submitting the answer to the puzzle), but the task specification on the backend is not concerned with them, because they are handled by the standard logging functionality of the backend. See the frontend documentation for the complete task description.
-- `exampleGroupSync.js` is a more elaborate example that shows how tasks can be used to for synchronous collaboration. After a user has completed a pre-test and needs to be assigned to a group, the frontend calls the `pushSyncsubmit` socket (see `app/api/controllers/socket/session.js` for the entry point), which causes the `handleSyncSubmit` function in the example to be called. Users are assigned to groups in a similar fashion to the async example, but the groups are stored in a database to ensure each topic is assigned to a group once. Also, the user is not assigned a task until the group has reached the required number of members, so they have to wait until the group is filled, causing the task to be synchronous. When the group is assigned a task, the socket is used to notify all other group members allowing them to start the task. The notification is automatically handled by SearchX's session management, so the task code only needs to mark the group as modified.
-
-You can modify these tasks as follows:
-
-1. Increasing group size 
-    - For the async example the `MAX_MEMBERS` constant in `exampleGroupAsync.js` can be changed.
-    - For the sync example the group size is defined by the frontend.
-
-2. Adding new puzzles or topics
-The puzzles for the asynchronous example are defined in `app/services/session/tasks/data/topics.json`. Learning topics for the synchronous example are defined inside `app/services/session/tasks/data/topics.json`. To add a new topic, you can add a new entry to these json files.
+Tasks define extra functionality that can be used in the frontend for user studies, for example placing users in groups according to predefined criteria, giving them search instructions, and asking them questions on what they found. Two example tasks have been added in `app/services/session/tasks/`. **Highlight-specific tasks will be defined soon.**
 
 ### Creating a custom task
 To define a new task in the backend, you can add a new service inside `app/services/session/tasks/`  and then change `app/services/session/index.js` to serve the task description from the new service.
@@ -234,52 +229,22 @@ The included result types are (fields preceded by `<OPTIONAL>` are optional):
 ```
 
 # Citation
-If you use SearchX to produce results for your scientific publication, please refer to our [SIGIR 2018](http://fmoraes.nl/documents/moraes2018sigir.pdf) paper.
+If you use the highlighting or note-taking widgets of SearchX to produce results for your scientific publication, please refer to our [CHIIR 2021]() or [ECIR2021]() papers.
 ```
-@inproceedings{putra2018searchx,
-  title={SearchX: Empowering Collaborative Search Research.},
-  author={Putra, Sindunuraga Rikarno and Moraes, Felipe and Hauff, Claudia},
-  booktitle={SIGIR},
-  pages={1265--1268},
-  year={2018}
+@inproceedings{roy2021active,
+  title={How Do Active Reading Strategies Affect Learning Outcomes in Web Search?},
+  author={Roy, Nirmal; Valle Torre, Manuel; Gadiraju, Ujwal; Maxwell, David; Hauff, Claudia},
+  booktitle={ECIR},
+  year={2021}
+}
+
+@inproceedings{roy2021notehighlight,
+  title={ Note the Highlight: Incorporating Active Reading Tools for Search As Learning},
+  author={Roy, Nirmal; Valle Torre, Manuel; Gadiraju, Ujwal; Maxwell, David; Hauff, Claudia},
+  booktitle={CHIIR},
+  year={2021}
 }
 ```
 
-
-### Publications
-
-    @article{moraes2019impact,
-      title={On the impact of group size on collaborative search effectiveness},
-      author={Moraes, Felipe and Grashoff, Kilian and Hauff, Claudia},
-      journal={Information Retrieval Journal},
-      pages={1--23},
-      year={2019},
-      publisher={Springer}
-    }
-    
-    
-    @inproceedings{moraes2019node,
-        title={node-indri: moving the Indri toolkit to the modern Web stack},
-        author={Moraes, Felipe and Hauff, Claudia},
-        booktitle={ECIR},
-        pages={241--245},
-        year={2019}
-    }
-
-    @inproceedings{moraes2018contrasting,
-      title={Contrasting Search as a Learning Activity with Instructor-designed Learning},
-      author={Moraes, Felipe and Putra, Sindunuraga Rikarno and Hauff, Claudia},
-      booktitle={CIKM},
-      pages={167--176},
-      year={2018}
-    }
-    
-    @inproceedings{putra2018development,
-        title={On the Development of a Collaborative Search System},
-        author={Putra, Sindunuraga Rikarno and Grashoff, Kilian and Moraes, Felipe and Hauff, Claudia},
-        booktitle={DESIRES},
-        pages={76--82},
-        year={2018}
-    }
 # License
 [MIT](https://opensource.org/licenses/MIT) License
