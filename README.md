@@ -4,7 +4,7 @@ SearchX is a scalable collaborative search system being developed by [Lambda Lab
 It is based on [Pineapple Search](http://onlinelibrary.wiley.com/doi/10.1002/pra2.2016.14505301122/full) and is further developed to facilitate collaborative search and sensemaking. SearchX includes features that enable crowdsourced user studies on collaborative search, and is easily extensible for new research.
 
 The backend is responsible for fetching search requests to the search provider and managing the application's data. 
-It is built on NodeJS and exposes its endpoints through [express](https://expressjs.com/) (API) and [socket.io](https://socket.io/) (Websockets). Use it together with the [SearchX Front End](https://github.com/roynirmal/searchx-front-highlight) to get a web-based collaborative search interface.
+It is built on NodeJS and exposes its endpoints through [express](https://expressjs.com/) (API) and [socket.io](https://socket.io/) (Websockets). Use it together with the [SearchX Front End](https://github.com/roynirmal/searchx-front-highlighting) to get a web-based collaborative search interface.
 
 **Note: This is the backend used for the publication *Note the Highlight: Incorporating Active Reading Tools in a Search as Learning Environment* (CHIIR21). It must be used together with any of the 4 possible frontend variants of the study (control, highlight, note, highlight+note)**
 
