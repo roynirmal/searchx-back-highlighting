@@ -1,6 +1,13 @@
 
 'use strict';
-
+// const scrap = require('../../scrap');
+// const puppeteer = require('puppeteer');
+// const request = require('request');
+const mongoose = require('mongoose');
+const Page = mongoose.model('Page');
+const Readability = require("readability");
+const JSDOM = require("jsdom").JSDOM;
+const requestPromise = require("request-promise-native");
 const BingApi = require('node-bing-api')({
     accKey: process.env.BING_ACCESS_KEY,
     rootUri: "https://api.cognitive.microsoft.com/bing/v7.0/"
@@ -9,7 +16,7 @@ const BingApi = require('node-bing-api')({
 /**
  * Fetch data from bing and return formatted results.
  */
-exports.fetch = function (query, vertical, pageNumber, resultsPerPage, relevanceFeedbackDocuments) {
+exports.fetch = async function (query, vertical, pageNumber, resultsPerPage, relevanceFeedbackDocuments) {
     return new Promise(function (resolve, reject) {
         const callback = function (err, res, body) {
             if (err) return reject(err);
@@ -36,6 +43,91 @@ exports.fetch = function (query, vertical, pageNumber, resultsPerPage, relevance
 /**
  * Format result body received from search api call.
  */
+const upsertPage = async function(url, doc) {
+    // console.log("inside upsert")
+    const query = {'url': url};
+    const options = {
+        upsert: true,
+        new: true,
+        setDefaultsOnInsert: true
+    };
+
+    const res = await Page.findOneAndUpdate(query, doc, options).exec()
+        .catch((err) => {
+            console.log('Could not save page.');
+            console.log(err);
+        });
+        // console.log("inside upsert after await")
+
+    return res._id;
+};
+
+const savePage = async function(url) {
+    // const page = await waitForNewPage();
+    // await page.goto(url, {waitUntil: 'networkidle2',  timeout: 100000});
+    // await page.setViewport({width: 1360, height: 768});
+
+    // const body = await page.content();
+    // // var article = new Readability(body).parse();
+    const body = await requestPromise(url);
+    const doc = new JSDOM(body, {
+        url: url,
+    });
+    const reader = new Readability(doc.window.document);
+    const article = reader.parse();
+
+
+    // console.log("Body", article)
+    // await page.close();
+
+    ////
+    return article
+};
+
+const getPage = async function(url) {
+    try {
+        // console.log("Iam here")
+        
+        const cont =  await Page
+        .find({url: url}, {url:1, html:1})
+        .sort({created: 1});
+        if (!Array.isArray(cont) || !cont.length) { 
+
+            const clean =  await savePage(url)
+            const insertid = await upsertPage(url, {
+                'url': url,
+                'timestamp': Math.floor(Date.now()),
+                'html': clean.content
+            });
+        
+            return clean.content
+        // console.log("before upsert")
+
+        } else {
+            // console.log("Found")
+            return cont[0].html
+        }
+        
+        // console.log("after upsert")
+    }
+    catch(err) {
+        return ""
+    }
+}
+
+exports.getByUrl = async function (url) {
+    // return new Promise(function (resolve, reject) {
+    //     const callback = function (error, result) {
+    //         if (error) return reject(error);
+    //         resolve(formatResult(result));
+    //     };
+        
+        return getPage(url)
+        // BingApi.web(url, options, callback);
+    // });
+};
+
+
 function formatResults(vertical, body) {
     if (!body) {
         throw new Error('No response from bing api.');
@@ -66,6 +158,18 @@ function formatResults(vertical, body) {
     };
 }
 
+function formatResult (result) {
+    
+    return {
+        id: result.id,
+        url: result.url,
+        name: result.name,
+        snippet: result.snippet,
+        about: result.about,
+        displayUrl: result.displayUrl,
+        // text: result.text
+    }
+}
 /**
  * Construct search query options according to search api (bing).
  * https://www.npmjs.com/package/node-bing-api

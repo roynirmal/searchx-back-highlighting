@@ -3,6 +3,7 @@
 const provider = require("./provider");
 const regulator = require('./regulator');
 const bookmark = require('../features/bookmark');
+const highlight = require('../features/highlight');
 const annotation = require('../features/annotation');
 const rating = require('../features/rating');
 const view = require('../features/view');
@@ -42,10 +43,19 @@ exports.search = async function (query, vertical, pageNumber, sessionId, userId,
  * @params {providerName} the name of the search provider to use (indri by default)
  */
 exports.getById = async function(id, providerName) {
+    // console.log("I am here index")
     return {
         result: await provider.getById(id, providerName)
     }
 };
+
+exports.getByUrl = async function(url, providerName) {
+    // console.log("I am here index")
+    return {
+        result: await provider.getByUrl(url, providerName)
+    }
+};
+
 
 
 /*
@@ -59,6 +69,7 @@ async function addMetadata(results, sessionId, userId) {
         const id = result.id ? result.id : result.url;
         result.metadata = {
             bookmark: await bookmark.getBookmark(sessionId, id),
+            highlight: await highlight.getHighlight(sessionId, id),
             exclude: await bookmark.getBookmark(sessionId, id, true),
             annotations: (await annotation.getAnnotations(sessionId, id)),
             rating: (await rating.getRating(sessionId, id, userId)),

@@ -26,10 +26,22 @@ exports.search = function(req, res) {
 };
 
 exports.getById = function (req, res) {
-    const docId = req.params.id;
+    // console.log("I am here search")
+    // const docId = req.params.id;
+    const url = req.query.getByUrl;
     const providerName = req.query.providerName || process.env.DEFAULT_SEARCH_PROVIDER;
 
-    search.getById(docId, providerName)
+    search.getById(url, providerName)
+        .then(data => res.status(200).json(data))
+        .catch(err => handleError(err));
+};
+
+exports.getByUrl = function (req, res) {
+    // console.log("I am here search")
+    const url = req.query.getByUrl;
+    const providerName = req.query.providerName || process.env.DEFAULT_SEARCH_PROVIDER;
+
+    search.getByUrl(url, providerName)
         .then(data => res.status(200).json(data))
         .catch(err => handleError(err));
 };

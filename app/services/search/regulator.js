@@ -2,6 +2,7 @@
 
 const provider = require('./provider');
 const bookmark = require('../../services/features/bookmark');
+const highlight = require('../../services/features/highlight');
 const viewedResults = require('./viewedResults');
 
 /**
@@ -25,21 +26,29 @@ exports.fetch = async function (query, vertical, pageNumber, sessionId, userId, 
 
     const resultPerPageCount = (vertical === 'images' || vertical === 'videos') ? 12 : 10;
     const bookmarks = await bookmark.getBookmarks(sessionId);
+    const highlights = await highlight.getHighlights(sessionId);
     const excludes = await bookmark.getBookmarks(sessionId, true);
     const userBookmarks = await bookmark.getUserBookmarks(sessionId, userId);
+    const userHighlights = await highlight.getUserHighlights(sessionId, userId);
     const bookmarkIds = bookmarks.map(bookmark => bookmark.url);
+    const highlightIds = highlights.map(highlight => highlight.url);
     const excludeIds = excludes.map(exclude => exclude.url);
     const collapsibleIds = bookmarkIds.concat(excludeIds);
     const userBookmarkIds = userBookmarks.map(bookmark => bookmark.url);
+    const userHighlightIds = userHighlights.map(highlight => highlight.url);
     const bookmarkIdMap = {};
     bookmarkIds.forEach(id => {
         bookmarkIdMap[id] = true;
+    });
+    const highlightIdMap = {};
+    highlightIds.forEach(id => {
+        highlightIdMap[id] = true;
     });
     const collapsibleIdMap = {};
     collapsibleIds.forEach(id => {
         collapsibleIdMap[id] = true;
     });
-
+1
     let relevanceFeedbackIds = [];
     if (relevanceFeedback === "individual") {
         relevanceFeedbackIds = userBookmarkIds;
@@ -51,6 +60,7 @@ exports.fetch = async function (query, vertical, pageNumber, sessionId, userId, 
 
     if (!distributionOfLabour) {
         const response = await provider.fetch(providerName, query, vertical, pageNumber, resultPerPageCount, relevanceFeedbackIds);
+        // console.log("response", response)
         response.results = addMissingFields(response.results);
         return response;
     }

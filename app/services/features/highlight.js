@@ -1,14 +1,14 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const Bookmark = mongoose.model('Bookmark');
-const Exclude = mongoose.model('Exclude');
+const Highlight = mongoose.model('Highlight');
+// const Exclude = mongoose.model('Exclude');
 const Page = mongoose.model('Page');
 ////
 
-exports.addBookmark = async function(sessionId, data, isExclude) {
-    const Type = isExclude ? Exclude : Bookmark;
-
+exports.addHighlight = async function(sessionId, data) {
+    const Type = Highlight;
+    // console.log("Highlight", data)
     data.sessionId = sessionId;
     const doc = await Type.findOne({
         url: data.url,
@@ -38,8 +38,8 @@ exports.addBookmark = async function(sessionId, data, isExclude) {
     }
 };
 
-exports.removeBookmark = async function(sessionId, url, isExclude) {
-    const Type = isExclude ? Exclude : Bookmark;
+exports.removeHighlight = async function(sessionId, url) {
+    const Type =  Highlight;
 
     const doc = await Type.findOne({
         url: url,
@@ -47,7 +47,7 @@ exports.removeBookmark = async function(sessionId, url, isExclude) {
     });
 
     if (!doc) {
-        throw new Error('Bookmark does not exist');
+        throw new Error('Highlight does not exist');
     }
 
     doc.starred = false;
@@ -55,14 +55,14 @@ exports.removeBookmark = async function(sessionId, url, isExclude) {
     doc.save();
 };
 
-exports.starBookmark = async function(sessionId, url) {
-    const doc = await Bookmark.findOne({
+exports.starHighlight = async function(sessionId, url) {
+    const doc = await Highlight.findOne({
         url: url,
         sessionId: sessionId
     });
 
     if (!doc) {
-        throw new Error('Bookmark does not exist');
+        throw new Error('Highlight does not exist');
     }
 
     doc.starred = !doc.starred;
@@ -71,8 +71,8 @@ exports.starBookmark = async function(sessionId, url) {
 
 ////
 
-exports.getBookmarks = async function(sessionId, isExclude) {
-    const Type = isExclude ? Exclude : Bookmark;
+exports.getHighlights = async function(sessionId) {
+    const Type =  Highlight;
 
     return await Type
         .find(
@@ -82,8 +82,8 @@ exports.getBookmarks = async function(sessionId, isExclude) {
         .sort({date: 1});
 };
 
-exports.getUserBookmarks = async function(sessionId, userId) {
-    return await Bookmark
+exports.getUserHighlights = async function(sessionId, userId) {
+    return await Highlight
         .find(
             {sessionId: sessionId, userId: userId, deleted: false},
             {url:1, title: 1, date: 1, userId: 1, starred: 1, text:1, _id: 0}
@@ -91,8 +91,8 @@ exports.getUserBookmarks = async function(sessionId, userId) {
         .sort({date: 1});
 };
 
-exports.getBookmark = async function(sessionId, url, isExclude) {
-    const Type = isExclude ? Exclude : Bookmark;
+exports.getHighlight = async function(sessionId, url) {
+    const Type = Highlight;
 
     const query = {
         sessionId: sessionId,

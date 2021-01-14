@@ -35,8 +35,14 @@ exports.fetch = function (providerName, query, vertical, pageNumber, resultsPerP
  * @params {providerName} the name of the search provider to use (indri by default)
  */
 exports.getById = function (id, providerName) {
+    // console.log("I am here provider.js")
     if (invalidProvider(providerName)) return invalidProvider(providerName);
     return providers[providerName].getById(id);
+};
+exports.getByUrl = function (url, providerName) {
+    // console.log("I am here provider.js")
+    if (invalidProvider(providerName)) return invalidProvider(providerName);
+    return providers[providerName].getByUrl(url);
 };
 
 function invalidProvider(providerName) {

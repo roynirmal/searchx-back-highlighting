@@ -8,8 +8,10 @@ require('../app/config/initializers/mongoose')(config.testDb);
 const should = require('should');
 const mongoose = require('mongoose');
 const Bookmark = mongoose.model('Bookmark');
+const Highlight = mongoose.model('Highlight');
 const regulator = require('../app/services/search/regulator');
 const bookmark = require("../app/services/features/bookmark");
+const highlight = require("../app/services/features/highlight");
 
 describe('regulator (requires a working search provider)', function () {
     const uid1 = '123';
@@ -38,6 +40,7 @@ describe('regulator (requires a working search provider)', function () {
             date: new Date('2018-03-28T20:03:34.833Z')
         };
         await bookmark.addBookmark(sid, data1);
+        
         const data2 = {
             userId: uid2,
             url: 'WCMZ92EBU0zMMLnalHhD',
@@ -47,6 +50,28 @@ describe('regulator (requires a working search provider)', function () {
             date: new Date('2018-03-28T20:24:20.922Z')
         };
         await bookmark.addBookmark(sid, data2);
+    });
+
+    before(async function () {
+        const data1 = {
+            userId: uid1,
+            url: 'ViMZ92EBU0zMMLnalHhD',
+            title: 'Title 1',
+            sessionId: sid,
+            created: new Date('2018-03-28T20:03:34.833Z'),
+            date: new Date('2018-03-28T20:03:34.833Z')
+        };
+        await highlight.addHighlight(sid, data1);
+        
+        const data2 = {
+            userId: uid2,
+            url: 'WCMZ92EBU0zMMLnalHhD',
+            title: 'Title 2',
+            sessionId: sid,
+            created: new Date('2018-03-28T20:24:20.922Z'),
+            date: new Date('2018-03-28T20:24:20.922Z')
+        };
+        await highlight.addHighlight(sid, data2);
     });
 
     // relevanceFeedbackTests.forEach(function (test) {
