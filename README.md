@@ -9,7 +9,13 @@ It is built on NodeJS and exposes its endpoints through [express](https://expres
 ## Highlight Backend
 This is the backend used for the publication *Note the Highlight: Incorporating Active Reading Tools in a Search as Learning Environment* (CHIIR21) and *How Do Active Reading Strategies AffectLearning Outcomes in Web Search?* (ECIR21). 
 It must be used together with with the specific [frontend](https://github.com/roynirmal/searchx-front-highlighting) that was also created for the study, where researchers can enable the Active Reading strategies evaluated: highlight, note-taking or both.
-This backend is based on the original [SearchX backend](https://github.com/felipemoraes/searchx-backend), but it has a completely different document rendering process: instead of showing the website with their complex styling, it is stripped down to black text on white background on a single column and images are left untouched - making highlighting easier to achieve and more impactful to the user.
+This backend is based on the original [SearchX backend](https://github.com/felipemoraes/searchx-backend), but it has a completely different document rendering process: instead of showing the website with their complex styling, it is stripped down to black text on white background on a single column and images are left untouched - making highlighting easier to achieve and more impactful to the user, as shown below:
+
+#### Simplified Document Viewer
+<img src="https://github.com/roynirmal/searchx-front-highlighting/blob/master/public/img/viewerTutorial/Slide1.PNG" width="500" >
+
+#### Regular Document Viewer
+<img src="https://github.com/roynirmal/searchx-front-highlighting/blob/master/public/img/banana_browser.png" width="500" >
 
 ### SearchX Backend Integration
 SearchX is a modular system, so this highlight-specific backend will be integrated back into the original as a feature that can be enabled/disabled, in the first half of 2021.
