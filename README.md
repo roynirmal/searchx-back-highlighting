@@ -12,10 +12,14 @@ It must be used together with with the specific [frontend](https://github.com/ro
 This backend is based on the original [SearchX backend](https://github.com/felipemoraes/searchx-backend), but it has a completely different document rendering process: instead of showing the website with their complex styling, it is stripped down to black text on white background on a single column and images are left untouched - making highlighting easier to achieve and more impactful to the user, as shown below:
 
 #### Simplified Document Viewer
-<img src="https://github.com/roynirmal/searchx-front-highlighting/blob/master/public/img/viewerTutorial/Slide1.PNG" width="500" >
+<p align="center">
+    <img src="https://github.com/roynirmal/searchx-front-highlighting/blob/master/public/img/viewerTutorial/Slide1.PNG" width="600" >
+</p>
 
 #### Regular Document Viewer
-<img src="https://github.com/roynirmal/searchx-front-highlighting/blob/master/public/img/banana_browser.png" width="500" >
+<p align="center">
+    <img src="https://github.com/roynirmal/searchx-front-highlighting/blob/master/public/img/banana_browser.png" width="600" >
+</p>
 
 ### SearchX Backend Integration
 SearchX is a modular system, so this highlight-specific backend will be integrated back into the original as a feature that can be enabled/disabled, in the first half of 2021.
