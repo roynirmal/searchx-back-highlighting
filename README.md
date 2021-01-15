@@ -50,10 +50,10 @@ These instructions are for Ubuntu Linux. The steps can be adapted for all major 
 - Set up the server
     ```
     // Clone the repository
-    git clone https://github.com/felipemoraes/searchx-backend.git
+    git clone https://github.com/roynirmal/searchx-back-highlighting.git
     
     // Change directory to repository
-    cd searchx-backend
+    cd earchx-back-highlighting
     
     // Install dependencies
     npm install
@@ -82,7 +82,7 @@ These instructions are for Ubuntu Linux. The steps can be adapted for all major 
     ```
     
 ## Docker Setup
-Go to the [Docker](https://github.com/felipemoraes/searchx#docker) submodule of the main SearchX repository for detailed instructions. Remember to specify the URL of the backend and this BRANCH in the Dockerfile as shown in `highlight/docker-images/app/Dockerfile`. 
+Go to the [Docker](https://github.com/felipemoraes/searchx#docker) submodule of the main SearchX repository for detailed instructions. Remember to specify the URL of the backend in the Dockerfile as shown in `highlight/docker-images/app/Dockerfile`. 
 
 ## Search Providers
 You can install the supported search providers as follows. See the [configuration section](#configuration) for how to configure which search provider is used by default.
@@ -167,7 +167,7 @@ The object containing the results needs to have the following fields:
 ]}
 ```
 
-The data structure of the `<result>` depends on the result type, which is defined by the component that will be used to display the result in the frontend. See the [searchx-frontend documentation](https://github.com/felipemoraes/searchx-frontend#search-providers) for an explanation of how to add custom result types.
+The data structure of the `<result>` depends on the result type, which is defined by the component that will be used to display the result in the frontend. See the [searchx-frontend documentation](https://github.com/roynirmal/searchx-front-highlighting#search-providers) for an explanation of how to add custom result types.
 
 The included result types are (fields preceded by `<OPTIONAL>` are optional):
 
