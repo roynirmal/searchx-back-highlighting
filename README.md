@@ -7,7 +7,7 @@ The backend is responsible for fetching search requests to the search provider a
 It is built on NodeJS and exposes its endpoints through [express](https://expressjs.com/) (API) and [socket.io](https://socket.io/) (Websockets). Use it together with the [SearchX Highlighting Front End](https://github.com/roynirmal/searchx-front-highlighting) to get a web-based search interface.
 
 ## Highlight Backend
-This is the backend used for the publication *Note the Highlight: Incorporating Active Reading Tools in a Search as Learning Environment* (CHIIR21). 
+This is the backend used for the publication *Note the Highlight: Incorporating Active Reading Tools in a Search as Learning Environment* (CHIIR21) and *How Do Active Reading Strategies AffectLearning Outcomes in Web Search?* (ECIR21). 
 It must be used together with with the specific [frontend](https://github.com/roynirmal/searchx-front-highlighting) that was also created for the study, where researchers can enable the Active Reading strategies evaluated: highlight, note-taking or both.
 This backend is based on the original [SearchX backend](https://github.com/felipemoraes/searchx-backend), but it has a completely different document rendering process: instead of showing the website with their complex styling, it is stripped down to black text on white background on a single column and images are left untouched - making highlighting easier to achieve and more impactful to the user.
 
