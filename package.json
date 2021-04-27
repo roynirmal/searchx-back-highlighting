@@ -28,7 +28,7 @@
     "randomcolor": "^0.5.4",
     "readability": "github:mozilla/readability",
     "request-promise-native": "latest",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "request": "^2.88.0",
     "socket.io": "^2.3.0",
     "stopword": "^1.0.0",
